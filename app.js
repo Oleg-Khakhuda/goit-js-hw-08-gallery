@@ -73,12 +73,12 @@ const btnRef = document.querySelector('[data-action="close-lightbox"]')
 
 // const galleryMarkup = createGalleryCardsMarkup(galleryItem);
 
-galleryRef.insertAdjacentHTML('beforeend', createGalleryItemsCardsMarkup(galleryItems)); // Добавляем разметку в html
+galleryRef.insertAdjacentHTML('beforeend', createGalleryItemsMarkup(galleryItems)); // Добавляем разметку в html
 galleryRef.addEventListener('click', onImageClick);
 
 // Создаем разметку
 
-function createGalleryItemsCardsMarkup(galleryItems) {
+function createGalleryItemsMarkup(galleryItems) {
   return galleryItems
     .map(({ preview, original, description }) => {
       return `
@@ -100,7 +100,42 @@ function createGalleryItemsCardsMarkup(galleryItems) {
     .join('');
 }
 
+// Открытие модального окна
 
+function onImageClick(evt) {
+  evt.preventDefault(); // отменяет переход по ссылке
+  if (!evt.target.classList.contains('gallery__image')) { // Клик только на элемент .gallery__image
+    return;
+  }
+
+  lightboxRef.classList.add('is-open');
+  lightboxImageRef.src = evt.target.getAttribute("data-source");
+  lightboxImageRef.alt = evt.target.alt;
+
+  
+
+  window.addEventListener('keydown', onEscKeyPress);
+}
+
+function closeModal() {
+    lightboxRef.classList.remove('is-open');
+    lightboxImageRef.src = ' ';
+    lightboxImageRef.alt = ' ';
+  
+  window.removeEventListener('keydown', onEscKeyPress);
+}
+
+// Закрытие модального окна по клику на кнопку
+
+  btnRef.addEventListener('click', closeModal);
+
+// Закрытие модального окна по клику на ESC
+  
+function onEscKeyPress(event) {
+  if (event.code === 'Escape') {
+    closeModal();
+  }
+}
  
 
   
