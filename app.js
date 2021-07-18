@@ -70,6 +70,8 @@ const lightboxRef = document.querySelector('.js-lightbox');
 const lightboxImageRef = document.querySelector('.lightbox__image')
 const btnRef = document.querySelector('[data-action="close-lightbox"]')
 const overlayRef = document.querySelector('.lightbox__overlay');
+const btnNextRef = document.querySelector('.lightbox__button-next');
+const btnPreviousRef = document.querySelector('.lightbox__button-previous');
 
 galleryRef.insertAdjacentHTML('beforeend', createGalleryItemsMarkup(galleryItems)); // Добавляем разметку в html
 galleryRef.addEventListener('click', onImageClick); // Открыть модальное окно
@@ -117,6 +119,8 @@ function openModal(evt) {
   window.addEventListener('keydown', escClose);
   window.addEventListener('keydown', arrowLeftPress);
   window.addEventListener('keydown', arrowRightPress);
+  btnNextRef.addEventListener('click', btnsNextPreviousClick);
+  btnPreviousRef.addEventListener('click', btnsNextPreviousClick);
   overlayRef.addEventListener('click', overlayCloseModal);
 }
 
@@ -142,28 +146,47 @@ function overlayCloseModal(evt) {
   }
 }
 
-// Переключение изображений стрелками
+// Переключение изображений стрелками на клавиатуре
 
 function arrowLeftPress(evt) {
   if (evt.code === 'ArrowLeft') {
-    const sources = galleryItems.map(({ original }) => original);
-    let indexOfDecrementImg = sources.indexOf(lightboxImageRef.src);
-
-    if (indexOfDecrementImg === 0) {
-      indexOfDecrementImg = sources.length;
-    }
-    lightboxImageRef.src = sources[indexOfDecrementImg - 1];
+    previousImage()
   }
 }
  
 function arrowRightPress(evt) {
   if (evt.code === 'ArrowRight') {
-    const sources = galleryItems.map(({ original }) => original);
-    let indexOfIncrementImg = sources.indexOf(lightboxImageRef.src);
-
-    if (indexOfIncrementImg + 1 > sources.length - 1) {
-      indexOfIncrementImg = -1;
-    }
-    lightboxImageRef.src = sources[indexOfIncrementImg + 1];
+   nextImage()
   }
+}
+
+// Переключение изображений кнопками(стрелками)
+
+function btnsNextPreviousClick(evt) {
+  if (evt.target === btnNextRef) {
+    nextImage()
+  }
+
+  if (evt.target === btnPreviousRef) {
+    previousImage()
+  }
+}
+
+function nextImage() {
+  const sources = galleryItems.map(({ original }) => original);
+  let indexOfImg = sources.indexOf(lightboxImageRef.src);
+    if (indexOfImg + 1 > sources.length - 1) {
+      indexOfImg = -1;
+    }
+  lightboxImageRef.src = sources[indexOfImg + 1];
+}
+
+function previousImage() {
+  const sources = galleryItems.map(({ original }) => original);
+  let indexOfImg = sources.indexOf(lightboxImageRef.src);
+
+    if (indexOfImg === 0) {
+      indexOfImg = sources.length;
+    }
+  lightboxImageRef.src = sources[indexOfImg - 1];
 }
