@@ -69,12 +69,11 @@ const galleryRef = document.querySelector('.js-gallery');
 const lightboxRef = document.querySelector('.js-lightbox');
 const lightboxImageRef = document.querySelector('.lightbox__image')
 const btnRef = document.querySelector('[data-action="close-lightbox"]')
-
-
-// const galleryMarkup = createGalleryCardsMarkup(galleryItem);
+const overlayRef = document.querySelector('.lightbox__overlay');
 
 galleryRef.insertAdjacentHTML('beforeend', createGalleryItemsMarkup(galleryItems)); // Добавляем разметку в html
-galleryRef.addEventListener('click', onImageClick);
+galleryRef.addEventListener('click', onImageClick); // Открыть модальное окно
+btnRef.addEventListener('click', closeModal); // Закрыть модальное окна по клику на кнопку
 
 // Создаем разметку
 
@@ -107,35 +106,64 @@ function onImageClick(evt) {
   if (!evt.target.classList.contains('gallery__image')) { // Клик только на элемент .gallery__image
     return;
   }
-
-  lightboxRef.classList.add('is-open');
-  lightboxImageRef.src = evt.target.getAttribute("data-source");
-  lightboxImageRef.alt = evt.target.alt;
-
-  
-
-  window.addEventListener('keydown', onEscKeyPress);
+  openModal(evt);
 }
 
-function closeModal() {
+function openModal(evt) {
+    lightboxRef.classList.add('is-open');
+    lightboxImageRef.src = evt.target.dataset.source;
+    lightboxImageRef.alt = evt.target.alt;
+
+  window.addEventListener('keydown', escClose);
+  window.addEventListener('keydown', arrowLeftPress);
+  window.addEventListener('keydown', arrowRightPress);
+  overlayRef.addEventListener('click', overlayCloseModal);
+}
+
+function closeModal(evt) {
     lightboxRef.classList.remove('is-open');
     lightboxImageRef.src = ' ';
     lightboxImageRef.alt = ' ';
-  
-  window.removeEventListener('keydown', onEscKeyPress);
 }
-
-// Закрытие модального окна по клику на кнопку
-
-  btnRef.addEventListener('click', closeModal);
 
 // Закрытие модального окна по клику на ESC
   
-function onEscKeyPress(event) {
-  if (event.code === 'Escape') {
+function escClose(evt) {
+  if (evt.code === 'Escape') {
     closeModal();
   }
 }
- 
 
-  
+// Закрытие модального окна по клику на overlay.
+
+function overlayCloseModal(evt) {
+  if (evt.currentTarget === evt.target) {
+    closeModal();
+  }
+}
+
+// Переключение изображений стрелками
+
+function arrowLeftPress(evt) {
+  if (evt.code === 'ArrowLeft') {
+    const sources = galleryItems.map(({ original }) => original);
+    let indexOfDecrementImg = sources.indexOf(lightboxImageRef.src);
+
+    if (indexOfDecrementImg === 0) {
+      indexOfDecrementImg = sources.length;
+    }
+    lightboxImageRef.src = sources[indexOfDecrementImg - 1];
+  }
+}
+ 
+function arrowRightPress(evt) {
+  if (evt.code === 'ArrowRight') {
+    const sources = galleryItems.map(({ original }) => original);
+    let indexOfIncrementImg = sources.indexOf(lightboxImageRef.src);
+
+    if (indexOfIncrementImg + 1 > sources.length - 1) {
+      indexOfIncrementImg = -1;
+    }
+    lightboxImageRef.src = sources[indexOfIncrementImg + 1];
+  }
+}
