@@ -64,7 +64,6 @@ const galleryItems = [
   },
 ];
 
-
 const galleryRef = document.querySelector('.js-gallery');
 const lightboxRef = document.querySelector('.js-lightbox');
 const lightboxImageRef = document.querySelector('.lightbox__image')
@@ -75,7 +74,13 @@ const btnPreviousRef = document.querySelector('.lightbox__button-previous');
 
 galleryRef.insertAdjacentHTML('beforeend', createGalleryItemsMarkup(galleryItems)); // Добавляем разметку в html
 galleryRef.addEventListener('click', onImageClick); // Открыть модальное окно
-btnRef.addEventListener('click', closeModal); // Закрыть модальное окна по клику на кнопку
+btnRef.addEventListener('click', closeModal); // Закрыть модальное окно по клику на кнопку
+window.addEventListener('keydown', escClose); // Закрыть модальное окно при нажатии на esc
+overlayRef.addEventListener('click', overlayCloseModal); // Закрыть модальное окно по клику на overlay
+window.addEventListener('keydown', arrowRightLeftPress); // Переключить изображение клавишей в право
+window.addEventListener('keydown', arrowRightLeftPress); // Переключить изображение клавишей в лево
+btnNextRef.addEventListener('click', btnsNextPreviousClick); // Переключить изображение кнопкой(стрелкой) в право
+btnPreviousRef.addEventListener('click', btnsNextPreviousClick); // Переключить изображение кнопкой(стрелкой) в лево
 
 // Создаем разметку
 
@@ -99,7 +104,7 @@ function createGalleryItemsMarkup(galleryItems) {
     `;
     })
     .join('');
-}
+};
 
 // Открытие модального окна
 
@@ -107,86 +112,78 @@ function onImageClick(evt) {
   evt.preventDefault(); // отменяет переход по ссылке
   if (!evt.target.classList.contains('gallery__image')) { // Клик только на элемент .gallery__image
     return;
-  }
-  openModal(evt);
-}
+  };
+  return openModal(evt);
+};
 
 function openModal(evt) {
-    lightboxRef.classList.add('is-open');
-    lightboxImageRef.src = evt.target.dataset.source;
-    lightboxImageRef.alt = evt.target.alt;
+  lightboxRef.classList.add('is-open');
+  lightboxImageRef.src = evt.target.dataset.source;
+  lightboxImageRef.alt = evt.target.alt;
+};
 
-  window.addEventListener('keydown', escClose);
-  window.addEventListener('keydown', arrowLeftPress);
-  window.addEventListener('keydown', arrowRightPress);
-  btnNextRef.addEventListener('click', btnsNextPreviousClick);
-  btnPreviousRef.addEventListener('click', btnsNextPreviousClick);
-  overlayRef.addEventListener('click', overlayCloseModal);
-}
+// Закрытие модального окна
 
-function closeModal(evt) {
-    lightboxRef.classList.remove('is-open');
-    lightboxImageRef.src = ' ';
-    lightboxImageRef.alt = ' ';
-}
+function closeModal() {
+  lightboxRef.classList.remove('is-open');
+  lightboxImageRef.src = ' ';
+  lightboxImageRef.alt = ' ';
+};
 
 // Закрытие модального окна по клику на ESC
   
 function escClose(evt) {
   if (evt.code === 'Escape') {
-    closeModal();
-  }
-}
+    return closeModal();
+  };
+};
 
 // Закрытие модального окна по клику на overlay.
 
 function overlayCloseModal(evt) {
   if (evt.currentTarget === evt.target) {
-    closeModal();
-  }
-}
+    return closeModal();
+  };
+};
 
 // Переключение изображений стрелками на клавиатуре
 
-function arrowLeftPress(evt) {
-  if (evt.code === 'ArrowLeft') {
-    previousImage()
-  }
-}
- 
-function arrowRightPress(evt) {
+function arrowRightLeftPress(evt) {
   if (evt.code === 'ArrowRight') {
-   nextImage()
-  }
-}
+    return nextImage();
+  };
+
+  if (evt.code === 'ArrowLeft') {
+    return previousImage();
+  };
+};
 
 // Переключение изображений кнопками(стрелками)
 
 function btnsNextPreviousClick(evt) {
   if (evt.target === btnNextRef) {
-    nextImage()
-  }
+    return nextImage();
+  };
 
   if (evt.target === btnPreviousRef) {
-    previousImage()
-  }
-}
+    return previousImage();
+  };
+};
 
 function nextImage() {
-  const sources = galleryItems.map(({ original }) => original);
-  let indexOfImg = sources.indexOf(lightboxImageRef.src);
+  const sources = galleryItems.map(({ original }) => original); // Получаем массив ссылок оригинальных картинок
+  let indexOfImg = sources.indexOf(lightboxImageRef.src); // Получаем индекс картинки в массиве
     if (indexOfImg + 1 > sources.length - 1) {
       indexOfImg = -1;
-    }
+  };
   lightboxImageRef.src = sources[indexOfImg + 1];
-}
+};
 
 function previousImage() {
   const sources = galleryItems.map(({ original }) => original);
   let indexOfImg = sources.indexOf(lightboxImageRef.src);
-
     if (indexOfImg === 0) {
       indexOfImg = sources.length;
-    }
+  };
   lightboxImageRef.src = sources[indexOfImg - 1];
-}
+};
