@@ -62,12 +62,33 @@ const galleryItems = [
       'https://cdn.pixabay.com/photo/2019/05/17/04/35/lighthouse-4208843_1280.jpg',
     description: 'Lighthouse Coast Sea',
   },
+   {
+    preview:
+      'https://cdn.pixabay.com/photo/2020/03/10/04/48/animal-4917802_640.jpg',
+    original:
+      `https://cdn.pixabay.com/photo/2020/03/10/04/48/animal-4917802_1280.jpg`,
+    description: 'Zebra',
+  },
+   {
+    preview:
+      'https://cdn.pixabay.com/photo/2016/11/14/04/45/elephant-1822636_640.jpg',
+    original:
+      `https://cdn.pixabay.com/photo/2016/11/14/04/45/elephant-1822636_1280.jpg`,
+    description: 'Elephant',
+  },
+     {
+    preview:
+      'https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_640.jpg',
+    original:
+      `https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_1280.jpg`,
+    description: 'Cat',
+  },
 ];
 
 const galleryRef = document.querySelector('.js-gallery');
 const lightboxRef = document.querySelector('.js-lightbox');
-const lightboxImageRef = document.querySelector('.lightbox__image')
-const btnRef = document.querySelector('[data-action="close-lightbox"]')
+const lightboxImageRef = document.querySelector('.lightbox__image');
+const btnRef = document.querySelector('[data-action="close-lightbox"]');
 const overlayRef = document.querySelector('.lightbox__overlay');
 const btnNextRef = document.querySelector('.lightbox__button-next');
 const btnPreviousRef = document.querySelector('.lightbox__button-previous');
@@ -94,8 +115,9 @@ function createGalleryItemsMarkup(galleryItems) {
   href=${original}
 >
   <img
-    class="gallery__image"
-    src=${preview}
+    class="gallery__image lazyload"
+    loading="lazy"
+    data-src=${preview}
     data-source=${original}
     alt=${description}
   />
@@ -105,6 +127,11 @@ function createGalleryItemsMarkup(galleryItems) {
     })
     .join('');
 };
+
+// подключить скрипт lazysizes.min.js - https://cdnjs.com/libraries/lazysizes
+// lazysizes не требует какой-либо конфигурации JS: добавьте класс «lazyload» к вашим изображениям 
+// атрибут src заменить на data-src
+// https://github.com/aFarkas/lazysizes
 
 // Открытие модального окна
 

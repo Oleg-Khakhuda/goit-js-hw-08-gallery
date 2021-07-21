@@ -48,10 +48,17 @@ body {
 }
 
 .gallery__image {
+  transform: translateX(-50%);
+  transition: all 500ms linear 500ms;
+  opacity: 0;
   height: 100%;
   width: 100%;
   object-fit: cover;
   transition: transform var(--animation-duration) var(--timing-function);
+}
+.appear {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .gallery__link {
