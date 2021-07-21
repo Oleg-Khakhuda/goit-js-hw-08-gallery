@@ -168,10 +168,16 @@ function escClose(evt) {
 // Закрытие модального окна по клику на overlay.
 
 function overlayCloseModal(evt) {
-  if (evt.currentTarget === evt.target) {
+  evt.stopPropagation();
     return closeModal();
-  };
+  ;
 };
+
+// function overlayCloseModal(evt) {
+//   if (evt.currentTarget === evt.target) {
+//     return closeModal();
+//   };
+// };
 
 // Переключение изображений стрелками на клавиатуре
 
